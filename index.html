@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thời Khóa Biểu Drag Drop</title>
+
+<title>Thời Khóa Biểu Firebase</title>
 
 <style>
 
@@ -15,112 +17,171 @@
 }
 
 body{
-    background:#f3f6fb;
+    background:#f1f5f9;
     padding:20px;
-}
-
-/* LOGIN */
-
-.login-container{
-    width:350px;
-    margin:80px auto;
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.1);
-}
-
-.login-container h2{
-    text-align:center;
-    margin-bottom:20px;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin-bottom:15px;
-    border:1px solid #ccc;
-    border-radius:8px;
-}
-
-button{
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    color:white;
-    background:#2563eb;
-    font-size:15px;
-}
-
-button:hover{
-    opacity:0.9;
 }
 
 .hidden{
     display:none;
 }
 
+/* LOGIN */
+
+.login-box{
+
+    width:350px;
+
+    margin:80px auto;
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+
+}
+
+.login-box h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input,select{
+
+    width:100%;
+
+    padding:10px;
+
+    margin-bottom:10px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+}
+
+button{
+
+    padding:10px 15px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    color:white;
+
+    background:#2563eb;
+
+}
+
+button:hover{
+    opacity:0.9;
+}
+
 /* TOPBAR */
 
 .topbar{
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
+
     margin-bottom:20px;
+
 }
 
 .topbar h1{
     color:#1e3a8a;
 }
 
+.admin-tag{
+
+    background:#dc2626;
+
+    color:white;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+}
+
+.viewer-tag{
+
+    background:#16a34a;
+
+    color:white;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+}
+
 /* TABLE */
 
-.table-container{
-    overflow:auto;
-}
-
 table{
+
     width:100%;
+
     border-collapse:collapse;
+
     background:white;
-    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+
 }
 
-th, td{
-    border:1px solid #dcdcdc;
-    min-width:120px;
-    height:80px;
-    text-align:center;
+th,td{
+
+    border:1px solid #ddd;
+
+    min-width:130px;
+
+    height:100px;
+
     vertical-align:top;
-    position:relative;
+
+    padding:5px;
+
 }
 
 th{
-    background:#e0e7ff;
-    padding:10px;
-    color:#1e3a8a;
+
+    background:#dbeafe;
+
 }
 
 .week-col{
+
     background:#f8fafc;
+
     font-weight:bold;
+
 }
 
 /* TASK */
 
 .task{
-    padding:8px;
-    border-radius:8px;
-    color:white;
-    margin:4px;
-    cursor:grab;
-    user-select:none;
-    font-weight:bold;
-}
 
-.task:active{
-    cursor:grabbing;
+    padding:8px;
+
+    border-radius:8px;
+
+    color:white;
+
+    margin-bottom:5px;
+
+    cursor:grab;
+
+    user-select:none;
+
+    font-weight:bold;
+
 }
 
 .red{background:#ef4444;}
@@ -130,73 +191,53 @@ th{
 .purple{background:#7e22ce;}
 .teal{background:#14b8a6;}
 
-/* ADD BOX */
-
 .add-box{
     margin-top:5px;
 }
 
-.add-box input{
-    padding:5px;
-    margin-bottom:5px;
-    font-size:12px;
-}
-
 .small-btn{
-    padding:5px 8px;
-    font-size:12px;
-}
-
-.viewer-tag{
-    background:#16a34a;
-    color:white;
-    padding:6px 12px;
-    border-radius:20px;
-}
-
-.admin-tag{
-    background:#dc2626;
-    color:white;
-    padding:6px 12px;
-    border-radius:20px;
-}
-
-.logout-btn{
-    background:#111827;
-}
-
-.no-edit{
-    pointer-events:none;
-    opacity:0.85;
+    width:100%;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <!-- LOGIN -->
 
-<div id="loginPage" class="login-container">
+<div id="loginPage" class="login-box">
 
     <h2>Đăng Nhập</h2>
 
-    <input type="text" id="username" placeholder="Tài khoản">
-    <input type="password" id="password" placeholder="Mật khẩu">
+    <input
+        type="email"
+        id="email"
+        placeholder="Email">
 
-    <button onclick="login()">Đăng nhập</button>
+    <input
+        type="password"
+        id="password"
+        placeholder="Mật khẩu">
 
-    <div style="margin-top:20px;font-size:14px;color:gray;line-height:1.6">
+    <button onclick="login()">
+        Đăng nhập
+    </button>
+
+    <div style="margin-top:20px;color:gray">
 
         <b>Admin:</b><br>
-        tài khoản: admin<br>
-        mật khẩu: 123456
+
+        admin@gmail.com<br>
+        123456
 
         <br><br>
 
         <b>Viewer:</b><br>
-        tài khoản: viewer<br>
-        mật khẩu: 111111
+
+        viewer@gmail.com<br>
+        111111
 
     </div>
 
@@ -208,15 +249,13 @@ th{
 
     <div class="topbar">
 
-        <div>
-            <h1>THỜI KHÓA BIỂU</h1>
-        </div>
+        <h1>THỜI KHÓA BIỂU</h1>
 
         <div style="display:flex;gap:10px;align-items:center">
 
             <div id="roleTag"></div>
 
-            <button class="logout-btn" onclick="logout()">
+            <button onclick="logout()">
                 Đăng xuất
             </button>
 
@@ -224,226 +263,257 @@ th{
 
     </div>
 
-    <div class="table-container">
+    <table>
 
-        <table>
+        <thead>
 
-            <thead>
-                <tr>
-                    <th>Tuần</th>
-                    <th>HS</th>
-                    <th>MD</th>
-                    <th>CTM</th>
-                    <th>TN</th>
-                    <th>PLM</th>
-                </tr>
-            </thead>
+            <tr>
 
-            <tbody id="scheduleBody"></tbody>
+                <th>Tuần</th>
+                <th>HS</th>
+                <th>MD</th>
+                <th>CTM</th>
+                <th>TN</th>
+                <th>PLM</th>
 
-        </table>
+            </tr>
 
-    </div>
+        </thead>
+
+        <tbody id="scheduleBody"></tbody>
+
+    </table>
 
 </div>
 
-<script>
+<!-- FIREBASE -->
 
-/* =========================
-   USERS
-========================= */
+<script type="module">
 
-const USERS = {
+import { initializeApp }
 
-    admin:{
-        password:"123456",
-        role:"admin"
-    },
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    viewer:{
-        password:"111111",
-        role:"viewer"
-    }
+import {
+
+    getAuth,
+
+    signInWithEmailAndPassword,
+
+    onAuthStateChanged,
+
+    signOut
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+
+    getFirestore,
+
+    doc,
+
+    setDoc,
+
+    onSnapshot
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyCWoIVAvtq8gZakeRlNN7weu6xGatQB_9Y",
+
+  authDomain: "cchnlab-cffbd.firebaseapp.com",
+
+  databaseURL: "https://cchnlab-cffbd-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+  projectId: "cchnlab-cffbd",
+
+  storageBucket: "cchnlab-cffbd.firebasestorage.app",
+
+  messagingSenderId: "155525229627",
+
+  appId: "1:155525229627:web:7a85b2d4b69aae7ee6001e",
+
+  measurementId: "G-M8WNTES0K7"
 
 };
 
-/* =========================
-   DATA
-========================= */
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+/* DEFAULT DATA */
 
 const defaultData = [
 
 {
-    week:"Tuần 1",
-    HS:{name:"Toàn", color:"purple"},
-    MD:{name:"Thành", color:"blue"},
-    CTM:{name:"dũng", color:"red"},
-    TN:{name:"V.anh", color:"orange"},
-    PLM:{name:"Nga", color:"green"}
-},
 
-{
-    week:"Tuần 2",
-    HS:{name:"V.anh", color:"orange"},
-    MD:{name:"Nga", color:"green"},
-    CTM:{name:"Hiệp", color:"red"},
-    TN:{name:"Thành", color:"blue"},
-    PLM:{name:"Toàn", color:"purple"}
-},
+week:"Tuần 1",
 
-{
-    week:"Tuần 3",
-    HS:{name:"Hiệp", color:"red"},
-    MD:{name:"Dũng", color:"orange"},
-    CTM:{name:"Toàn", color:"blue"},
-    TN:{name:"Nga", color:"purple"},
-    PLM:{name:"Thành", color:"green"}
-},
+HS:{name:"Toàn",color:"purple"},
 
-{
-    week:"Tuần 4",
-    HS:{name:"dũng", color:"red"},
-    MD:{name:"v.anh", color:"orange"},
-    CTM:{name:"thành", color:"blue"},
-    TN:{name:"toàn", color:"purple"},
-    PLM:{name:"nga", color:"green"}
-},
+MD:{name:"Thành",color:"blue"},
 
-{
-    week:"Tuần 5",
-    HS:{name:"", color:"blue"},
-    MD:{name:"", color:"green"},
-    CTM:{name:"", color:"orange"},
-    TN:{name:"", color:"purple"},
-    PLM:{name:"", color:"red"}
+CTM:{name:"Dũng",color:"red"},
+
+TN:{name:"V.Anh",color:"orange"},
+
+PLM:{name:"Nga",color:"green"}
+
 }
 
 ];
 
-/* =========================
-   SAVE / LOAD
-========================= */
+/* GLOBAL */
 
-function getData(){
+let currentRole = "viewer";
 
-    let data = localStorage.getItem("scheduleData");
+let dragged = null;
 
-    if(!data){
+/* LOGIN */
 
-        localStorage.setItem(
-            "scheduleData",
-            JSON.stringify(defaultData)
-        );
+window.login = async function(){
 
-        return defaultData;
-    }
-
-    return JSON.parse(data);
-}
-
-function saveData(data){
-
-    localStorage.setItem(
-        "scheduleData",
-        JSON.stringify(data)
-    );
-}
-
-/* =========================
-   LOGIN
-========================= */
-
-function login(){
-
-    const username =
-        document.getElementById("username").value;
+    const email =
+        document.getElementById("email").value;
 
     const password =
         document.getElementById("password").value;
 
-    if(
-        USERS[username] &&
-        USERS[username].password === password
-    ){
+    try{
 
-        localStorage.setItem(
-            "currentUser",
-            username
+        await signInWithEmailAndPassword(
+
+            auth,
+            email,
+            password
+
         );
 
-        showApp();
+    }catch(err){
 
-    }else{
-
-        alert("Sai tài khoản hoặc mật khẩu");
+        alert(err.message);
 
     }
 
 }
 
-function logout(){
+/* LOGOUT */
 
-    localStorage.removeItem("currentUser");
+window.logout = async function(){
 
-    location.reload();
+    await signOut(auth);
+
 }
 
-/* =========================
-   SHOW APP
-========================= */
+/* AUTH STATE */
 
-function showApp(){
+onAuthStateChanged(auth, async(user)=>{
 
-    document.getElementById("loginPage")
+    if(user){
+
+        document
+        .getElementById("loginPage")
         .classList.add("hidden");
 
-    document.getElementById("app")
+        document
+        .getElementById("app")
         .classList.remove("hidden");
 
-    const currentUser =
-        localStorage.getItem("currentUser");
+        if(user.email === "admin@gmail.com"){
 
-    const role = USERS[currentUser].role;
+            currentRole = "admin";
 
-    const roleTag =
-        document.getElementById("roleTag");
+            document.getElementById(
+                "roleTag"
+            ).innerHTML = `
+                <div class="admin-tag">
+                    ADMIN
+                </div>
+            `;
 
-    if(role === "admin"){
+        }else{
 
-        roleTag.innerHTML =
-            `<div class="admin-tag">
-                ADMIN
-            </div>`;
+            currentRole = "viewer";
+
+            document.getElementById(
+                "roleTag"
+            ).innerHTML = `
+                <div class="viewer-tag">
+                    VIEW ONLY
+                </div>
+            `;
+
+        }
+
+        listenRealtime();
 
     }else{
 
-        roleTag.innerHTML =
-            `<div class="viewer-tag">
-                VIEW ONLY
-            </div>`;
+        document
+        .getElementById("loginPage")
+        .classList.remove("hidden");
+
+        document
+        .getElementById("app")
+        .classList.add("hidden");
 
     }
 
-    renderTable(role);
+});
+
+/* REALTIME */
+
+function listenRealtime(){
+
+    onSnapshot(
+
+        doc(db,"schedule","main"),
+
+        async(snapshot)=>{
+
+            if(!snapshot.exists()){
+
+                await setDoc(
+
+                    doc(db,"schedule","main"),
+
+                    {data:defaultData}
+
+                );
+
+                return;
+            }
+
+            renderTable(snapshot.data().data);
+
+        }
+
+    );
 
 }
 
-/* =========================
-   RENDER
-========================= */
+/* RENDER */
 
-function renderTable(role){
+function renderTable(data){
 
     const body =
         document.getElementById("scheduleBody");
 
     body.innerHTML = "";
 
-    const data = getData();
+    data.forEach((row,rowIndex)=>{
 
-    data.forEach((row, rowIndex)=>{
-
-        const tr = document.createElement("tr");
+        const tr =
+            document.createElement("tr");
 
         tr.innerHTML += `
             <td class="week-col">
@@ -454,25 +524,24 @@ function renderTable(role){
         ["HS","MD","CTM","TN","PLM"]
         .forEach((col)=>{
 
-            const td = document.createElement("td");
+            const td =
+                document.createElement("td");
 
-            td.dataset.row = rowIndex;
-            td.dataset.col = col;
+            const item = row[col];
 
-            if(role === "admin"){
+            if(currentRole==="admin"){
 
                 td.addEventListener(
                     "dragover",
-                    dragOver
+                    e=>e.preventDefault()
                 );
 
                 td.addEventListener(
                     "drop",
-                    drop
+                    ()=>drop(td)
                 );
-            }
 
-            const item = row[col];
+            }
 
             if(item.name){
 
@@ -485,41 +554,24 @@ function renderTable(role){
                 task.innerText =
                     item.name;
 
-                if(role === "admin"){
+                if(currentRole==="admin"){
 
                     task.draggable = true;
 
                     task.addEventListener(
                         "dragstart",
-                        dragStart
+                        ()=>dragged = task
                     );
-
-                    task.addEventListener(
-                        "dblclick",
-                        ()=>{
-
-                            if(confirm("Xóa?")){
-
-                                task.remove();
-
-                                updateData();
-
-                            }
-
-                        }
-                    );
-
-                }else{
-
-                    task.classList.add("no-edit");
 
                 }
 
                 td.appendChild(task);
+
             }
 
-            // ADMIN ADD
-            if(role === "admin"){
+            /* ADMIN */
+
+            if(currentRole==="admin"){
 
                 const addBox =
                     document.createElement("div");
@@ -536,25 +588,28 @@ function renderTable(role){
                     <select>
 
                         <option value="red">Đỏ</option>
+
                         <option value="blue">Xanh</option>
+
                         <option value="green">Lá</option>
+
                         <option value="orange">Cam</option>
+
                         <option value="purple">Tím</option>
+
                         <option value="teal">Ngọc</option>
 
                     </select>
 
-                    <button
-                        class="small-btn">
-                        +
+                    <button class="small-btn">
+                        Thêm
                     </button>
 
                 `;
 
-                const btn =
-                    addBox.querySelector("button");
-
-                btn.onclick = ()=>{
+                addBox
+                .querySelector("button")
+                .onclick = async()=>{
 
                     const name =
                         addBox.querySelector("input")
@@ -566,35 +621,12 @@ function renderTable(role){
 
                     if(name.trim()==="") return;
 
-                    td.innerHTML = "";
-
-                    const task =
-                        document.createElement("div");
-
-                    task.className =
-                        `task ${color}`;
-
-                    task.innerText = name;
-
-                    task.draggable = true;
-
-                    task.addEventListener(
-                        "dragstart",
-                        dragStart
-                    );
-
-                    td.appendChild(task);
-
-                    renderTable("admin");
-
-                    const newData = getData();
-
-                    newData[rowIndex][col] = {
+                    data[rowIndex][col] = {
                         name,
                         color
                     };
 
-                    saveData(newData);
+                    await saveFirestore(data);
 
                 };
 
@@ -612,69 +644,52 @@ function renderTable(role){
 
 }
 
-/* =========================
-   DRAG
-========================= */
+/* DROP */
 
-let dragged = null;
-
-function dragStart(){
-
-    dragged = this;
-}
-
-function dragOver(e){
-
-    e.preventDefault();
-}
-
-function drop(){
+async function drop(td){
 
     if(!dragged) return;
 
-    const targetTask =
-        this.querySelector(".task");
+    const target =
+        td.querySelector(".task");
 
-    if(targetTask){
+    if(target){
 
-        const tempText =
-            targetTask.innerText;
+        const a = dragged.innerText;
 
-        const tempClass =
-            targetTask.className;
+        const b = target.innerText;
 
-        targetTask.innerText =
-            dragged.innerText;
+        const ac = dragged.className;
 
-        targetTask.className =
-            dragged.className;
+        const bc = target.className;
 
-        dragged.innerText =
-            tempText;
+        dragged.innerText = b;
 
-        dragged.className =
-            tempClass;
+        target.innerText = a;
 
-    }else{
+        dragged.className = bc;
 
-        this.prepend(dragged);
+        target.className = ac;
 
     }
 
-    updateData();
+    await syncFromUI();
+
 }
 
-/* =========================
-   UPDATE DATA
-========================= */
+/* SAVE */
 
-function updateData(){
+async function syncFromUI(){
 
-    const data = getData();
+    const rows = [];
 
     document
     .querySelectorAll("#scheduleBody tr")
     .forEach((tr,rowIndex)=>{
+
+        const obj = {
+            week:`Tuần ${rowIndex+1}`
+        };
 
         const cols =
             ["HS","MD","CTM","TN","PLM"];
@@ -687,30 +702,23 @@ function updateData(){
             const task =
                 td.querySelector(".task");
 
+            let color = "blue";
+
             if(task){
 
-                const col =
-                    cols[index-1];
+                ["red","blue","green","orange","purple","teal"]
+                .forEach(c=>{
 
-                const colors =
-                    ["red","blue","green","orange","purple","teal"];
-
-                let currentColor = "blue";
-
-                colors.forEach(c=>{
-
-                    if(task.classList.contains(c)){
-
-                        currentColor = c;
-
-                    }
+                    if(task.classList.contains(c))
+                        color = c;
 
                 });
 
-                data[rowIndex][col] = {
+                obj[cols[index-1]] = {
 
                     name:task.innerText,
-                    color:currentColor
+
+                    color
 
                 };
 
@@ -718,18 +726,25 @@ function updateData(){
 
         });
 
+        rows.push(obj);
+
     });
 
-    saveData(data);
+    await saveFirestore(rows);
+
 }
 
-/* =========================
-   AUTO LOGIN
-========================= */
+/* SAVE FIRESTORE */
 
-if(localStorage.getItem("currentUser")){
+async function saveFirestore(data){
 
-    showApp();
+    await setDoc(
+
+        doc(db,"schedule","main"),
+
+        {data}
+
+    );
 
 }
 
