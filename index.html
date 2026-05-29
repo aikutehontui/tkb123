@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thời Khóa Biểu Drag Drop</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    background:#f3f6fb;
+    padding:20px;
+}
+
+/* LOGIN */
+
+.login-container{
+    width:350px;
+    margin:80px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.login-container h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    color:white;
+    background:#2563eb;
+    font-size:15px;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.hidden{
+    display:none;
+}
+
+/* TOPBAR */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.topbar h1{
+    color:#1e3a8a;
+}
+
+/* TABLE */
+
+.table-container{
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+th, td{
+    border:1px solid #dcdcdc;
+    min-width:120px;
+    height:80px;
+    text-align:center;
+    vertical-align:top;
+    position:relative;
+}
+
+th{
+    background:#e0e7ff;
+    padding:10px;
+    color:#1e3a8a;
+}
+
+.week-col{
+    background:#f8fafc;
+    font-weight:bold;
+}
+
+/* TASK */
+
+.task{
+    padding:8px;
+    border-radius:8px;
+    color:white;
+    margin:4px;
+    cursor:grab;
+    user-select:none;
+    font-weight:bold;
+}
+
+.task:active{
+    cursor:grabbing;
+}
+
+.red{background:#ef4444;}
+.blue{background:#3b82f6;}
+.green{background:#22c55e;}
+.orange{background:#f59e0b;}
+.purple{background:#7e22ce;}
+.teal{background:#14b8a6;}
+
+/* ADD BOX */
+
+.add-box{
+    margin-top:5px;
+}
+
+.add-box input{
+    padding:5px;
+    margin-bottom:5px;
+    font-size:12px;
+}
+
+.small-btn{
+    padding:5px 8px;
+    font-size:12px;
+}
+
+.viewer-tag{
+    background:#16a34a;
+    color:white;
+    padding:6px 12px;
+    border-radius:20px;
+}
+
+.admin-tag{
+    background:#dc2626;
+    color:white;
+    padding:6px 12px;
+    border-radius:20px;
+}
+
+.logout-btn{
+    background:#111827;
+}
+
+.no-edit{
+    pointer-events:none;
+    opacity:0.85;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="login-container">
+
+    <h2>Đăng Nhập</h2>
+
+    <input type="text" id="username" placeholder="Tài khoản">
+    <input type="password" id="password" placeholder="Mật khẩu">
+
+    <button onclick="login()">Đăng nhập</button>
+
+    <div style="margin-top:20px;font-size:14px;color:gray;line-height:1.6">
+
+        <b>Admin:</b><br>
+        tài khoản: admin<br>
+        mật khẩu: 123456
+
+        <br><br>
+
+        <b>Viewer:</b><br>
+        tài khoản: viewer<br>
+        mật khẩu: 111111
+
+    </div>
+
+</div>
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+    <div class="topbar">
+
+        <div>
+            <h1>THỜI KHÓA BIỂU</h1>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center">
+
+            <div id="roleTag"></div>
+
+            <button class="logout-btn" onclick="logout()">
+                Đăng xuất
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Tuần</th>
+                    <th>HS</th>
+                    <th>MD</th>
+                    <th>CTM</th>
+                    <th>TN</th>
+                    <th>PLM</th>
+                </tr>
+            </thead>
+
+            <tbody id="scheduleBody"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+   USERS
+========================= */
+
+const USERS = {
+
+    admin:{
+        password:"123456",
+        role:"admin"
+    },
+
+    viewer:{
+        password:"111111",
+        role:"viewer"
+    }
+
+};
+
+/* =========================
+   DATA
+========================= */
+
+const defaultData = [
+
+{
+    week:"Tuần 1",
+    HS:{name:"Toàn", color:"purple"},
+    MD:{name:"Thành", color:"blue"},
+    CTM:{name:"dũng", color:"red"},
+    TN:{name:"V.anh", color:"orange"},
+    PLM:{name:"Nga", color:"green"}
+},
+
+{
+    week:"Tuần 2",
+    HS:{name:"V.anh", color:"orange"},
+    MD:{name:"Nga", color:"green"},
+    CTM:{name:"Hiệp", color:"red"},
+    TN:{name:"Thành", color:"blue"},
+    PLM:{name:"Toàn", color:"purple"}
+},
+
+{
+    week:"Tuần 3",
+    HS:{name:"Hiệp", color:"red"},
+    MD:{name:"Dũng", color:"orange"},
+    CTM:{name:"Toàn", color:"blue"},
+    TN:{name:"Nga", color:"purple"},
+    PLM:{name:"Thành", color:"green"}
+},
+
+{
+    week:"Tuần 4",
+    HS:{name:"dũng", color:"red"},
+    MD:{name:"v.anh", color:"orange"},
+    CTM:{name:"thành", color:"blue"},
+    TN:{name:"toàn", color:"purple"},
+    PLM:{name:"nga", color:"green"}
+},
+
+{
+    week:"Tuần 5",
+    HS:{name:"", color:"blue"},
+    MD:{name:"", color:"green"},
+    CTM:{name:"", color:"orange"},
+    TN:{name:"", color:"purple"},
+    PLM:{name:"", color:"red"}
+}
+
+];
+
+/* =========================
+   SAVE / LOAD
+========================= */
+
+function getData(){
+
+    let data = localStorage.getItem("scheduleData");
+
+    if(!data){
+
+        localStorage.setItem(
+            "scheduleData",
+            JSON.stringify(defaultData)
+        );
+
+        return defaultData;
+    }
+
+    return JSON.parse(data);
+}
+
+function saveData(data){
+
+    localStorage.setItem(
+        "scheduleData",
+        JSON.stringify(data)
+    );
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+function login(){
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    if(
+        USERS[username] &&
+        USERS[username].password === password
+    ){
+
+        localStorage.setItem(
+            "currentUser",
+            username
+        );
+
+        showApp();
+
+    }else{
+
+        alert("Sai tài khoản hoặc mật khẩu");
+
+    }
+
+}
+
+function logout(){
+
+    localStorage.removeItem("currentUser");
+
+    location.reload();
+}
+
+/* =========================
+   SHOW APP
+========================= */
+
+function showApp(){
+
+    document.getElementById("loginPage")
+        .classList.add("hidden");
+
+    document.getElementById("app")
+        .classList.remove("hidden");
+
+    const currentUser =
+        localStorage.getItem("currentUser");
+
+    const role = USERS[currentUser].role;
+
+    const roleTag =
+        document.getElementById("roleTag");
+
+    if(role === "admin"){
+
+        roleTag.innerHTML =
+            `<div class="admin-tag">
+                ADMIN
+            </div>`;
+
+    }else{
+
+        roleTag.innerHTML =
+            `<div class="viewer-tag">
+                VIEW ONLY
+            </div>`;
+
+    }
+
+    renderTable(role);
+
+}
+
+/* =========================
+   RENDER
+========================= */
+
+function renderTable(role){
+
+    const body =
+        document.getElementById("scheduleBody");
+
+    body.innerHTML = "";
+
+    const data = getData();
+
+    data.forEach((row, rowIndex)=>{
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML += `
+            <td class="week-col">
+                ${row.week}
+            </td>
+        `;
+
+        ["HS","MD","CTM","TN","PLM"]
+        .forEach((col)=>{
+
+            const td = document.createElement("td");
+
+            td.dataset.row = rowIndex;
+            td.dataset.col = col;
+
+            if(role === "admin"){
+
+                td.addEventListener(
+                    "dragover",
+                    dragOver
+                );
+
+                td.addEventListener(
+                    "drop",
+                    drop
+                );
+            }
+
+            const item = row[col];
+
+            if(item.name){
+
+                const task =
+                    document.createElement("div");
+
+                task.className =
+                    `task ${item.color}`;
+
+                task.innerText =
+                    item.name;
+
+                if(role === "admin"){
+
+                    task.draggable = true;
+
+                    task.addEventListener(
+                        "dragstart",
+                        dragStart
+                    );
+
+                    task.addEventListener(
+                        "dblclick",
+                        ()=>{
+
+                            if(confirm("Xóa?")){
+
+                                task.remove();
+
+                                updateData();
+
+                            }
+
+                        }
+                    );
+
+                }else{
+
+                    task.classList.add("no-edit");
+
+                }
+
+                td.appendChild(task);
+            }
+
+            // ADMIN ADD
+            if(role === "admin"){
+
+                const addBox =
+                    document.createElement("div");
+
+                addBox.className =
+                    "add-box";
+
+                addBox.innerHTML = `
+
+                    <input
+                        type="text"
+                        placeholder="Tên">
+
+                    <select>
+
+                        <option value="red">Đỏ</option>
+                        <option value="blue">Xanh</option>
+                        <option value="green">Lá</option>
+                        <option value="orange">Cam</option>
+                        <option value="purple">Tím</option>
+                        <option value="teal">Ngọc</option>
+
+                    </select>
+
+                    <button
+                        class="small-btn">
+                        +
+                    </button>
+
+                `;
+
+                const btn =
+                    addBox.querySelector("button");
+
+                btn.onclick = ()=>{
+
+                    const name =
+                        addBox.querySelector("input")
+                        .value;
+
+                    const color =
+                        addBox.querySelector("select")
+                        .value;
+
+                    if(name.trim()==="") return;
+
+                    td.innerHTML = "";
+
+                    const task =
+                        document.createElement("div");
+
+                    task.className =
+                        `task ${color}`;
+
+                    task.innerText = name;
+
+                    task.draggable = true;
+
+                    task.addEventListener(
+                        "dragstart",
+                        dragStart
+                    );
+
+                    td.appendChild(task);
+
+                    renderTable("admin");
+
+                    const newData = getData();
+
+                    newData[rowIndex][col] = {
+                        name,
+                        color
+                    };
+
+                    saveData(newData);
+
+                };
+
+                td.appendChild(addBox);
+
+            }
+
+            tr.appendChild(td);
+
+        });
+
+        body.appendChild(tr);
+
+    });
+
+}
+
+/* =========================
+   DRAG
+========================= */
+
+let dragged = null;
+
+function dragStart(){
+
+    dragged = this;
+}
+
+function dragOver(e){
+
+    e.preventDefault();
+}
+
+function drop(){
+
+    if(!dragged) return;
+
+    const targetTask =
+        this.querySelector(".task");
+
+    if(targetTask){
+
+        const tempText =
+            targetTask.innerText;
+
+        const tempClass =
+            targetTask.className;
+
+        targetTask.innerText =
+            dragged.innerText;
+
+        targetTask.className =
+            dragged.className;
+
+        dragged.innerText =
+            tempText;
+
+        dragged.className =
+            tempClass;
+
+    }else{
+
+        this.prepend(dragged);
+
+    }
+
+    updateData();
+}
+
+/* =========================
+   UPDATE DATA
+========================= */
+
+function updateData(){
+
+    const data = getData();
+
+    document
+    .querySelectorAll("#scheduleBody tr")
+    .forEach((tr,rowIndex)=>{
+
+        const cols =
+            ["HS","MD","CTM","TN","PLM"];
+
+        tr.querySelectorAll("td")
+        .forEach((td,index)=>{
+
+            if(index===0) return;
+
+            const task =
+                td.querySelector(".task");
+
+            if(task){
+
+                const col =
+                    cols[index-1];
+
+                const colors =
+                    ["red","blue","green","orange","purple","teal"];
+
+                let currentColor = "blue";
+
+                colors.forEach(c=>{
+
+                    if(task.classList.contains(c)){
+
+                        currentColor = c;
+
+                    }
+
+                });
+
+                data[rowIndex][col] = {
+
+                    name:task.innerText,
+                    color:currentColor
+
+                };
+
+            }
+
+        });
+
+    });
+
+    saveData(data);
+}
+
+/* =========================
+   AUTO LOGIN
+========================= */
+
+if(localStorage.getItem("currentUser")){
+
+    showApp();
+
+}
+
+</script>
+
+</body>
+</html>
